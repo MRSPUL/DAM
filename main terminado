@@ -1,0 +1,99 @@
+package com.example.listadetareas;
+
+import android.app.AlertDialog;
+import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.Arrays;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+    private TextInputLayout tilTitulo;
+    private TextInputEditText editTitulo;
+    private TextInputLayout tilAutor;
+    private TextInputEditText editAutor;
+    private Spinner spEstado;
+    private MaterialSwitch swUrgente;
+    private MaterialButton btnGuardar;
+    private MaterialButton btnCancelar;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        tilTitulo = findViewById(R.id.tilTitulo);
+        editTitulo = findViewById(R.id.editTitulo);
+        tilAutor = findViewById(R.id.tilAutor);
+        editAutor = findViewById(R.id.editAutor);
+        spEstado = findViewById(R.id.spEstado);
+        swUrgente = findViewById(R.id.swUrgente);
+        btnGuardar = findViewById(R.id.btnGuardar);
+        btnCancelar = findViewById(R.id.btnCancelar);
+
+        List<String> estados = Arrays.asList("Pendiente", "En progreso", "Completada", "No aplica");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, estados);  // Adaptador de la lista
+        spEstado.setAdapter(adapter);
+
+        btnGuardar.setOnClickListener(v-> {                                                                             //Boton
+            String titulo = editTitulo.getText() != null ? editTitulo.getText().toString().trim() : "";                           //Validacion de titulo y autor
+            String autor = editAutor.getText() != null ? editAutor.getText().toString().trim() : "";
+
+
+            if (titulo.isEmpty()) {
+                tilTitulo.setError("Ingresar titulo");
+                editTitulo.requestFocus();
+                return;
+            } else {
+                tilTitulo.setError(null);
+            }
+
+            if (autor.isEmpty()) {
+                tilAutor.setError("Ingresar Autor");
+                editAutor.requestFocus();
+                return;
+            } else {
+                tilAutor.setError(null);
+            }
+
+            String estado = spEstado.getSelectedItem().toString();
+
+            boolean urgente = swUrgente.isChecked();                                                    //Switch
+
+
+
+
+
+            String mensajeSalida = "Recordatorio guardado correctamente \n"
+                    + "Titulo: " + titulo + "\n"
+                    + "Estado: " + estado + "\n"
+                    + "Urgente: " + (urgente ? "Si" : "No");
+
+
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Tarea guardada")
+                    .setMessage(mensajeSalida)
+                    .setPositiveButton("Ok", null)
+                    .show();
+
+        });
+
+        btnCancelar.setOnClickListener(v->{
+            finishAffinity();
+        });
+    }
+}
